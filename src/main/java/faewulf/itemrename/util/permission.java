@@ -18,4 +18,7 @@ public class permission {
     //enchant glint
     public static final String GLOW = MODID + ".glow";
     public static final String REMOVEGLOW = MODID + ".glow";
+    //hide enchant
+    public static final String HIDEENCHANT = MODID + ".hideenchant";
+    public static final String UNHIDEENCHANT = MODID + ".hideenchant";
 }
