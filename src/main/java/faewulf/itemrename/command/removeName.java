@@ -21,7 +21,7 @@ import java.util.Objects;
 public class removeName {
     static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("rename")
+                CommandManager.literal("removename")
                         .requires(ServerCommandSource::isExecutedByPlayer)
                         .requires(Permissions.require(permission.REMOVENAME))
                         .executes(removeName::run)
@@ -38,7 +38,7 @@ public class removeName {
         //if not holding anything
         if (holding.isEmpty()) {
             throw new SimpleCommandExceptionType(
-                    Text.of("You must hold an item to rename it.")).create();
+                    Text.of("You must hold an item to edit it.")).create();
         }
 
         ownerCheck.check(player, holding);
