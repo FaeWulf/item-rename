@@ -48,7 +48,6 @@ dependencies {
     //permission
     include(modImplementation('me.lucko:fabric-permissions-api:0.3.1'))
 
-
 }
 
 processResources {

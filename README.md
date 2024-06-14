@@ -26,9 +26,15 @@ Also you can use my tools to easily make your own custom name/lore: https://faew
 | `/lockitem`                                 | Lock item edit, allowing only you to modify selected items.   | itemrename.lock   |
 | `/unlockitem`                               | Unlock item edit, allowing everyone to modify selected items. | itemrename.lock   |
 
-## Additional Permissions
-
 - **itemrename.admin:** Allows bypassing lock check for item editing.
+
+## Additional Caution
+
+If you did not install any permission manager mod (ex: LuckPerms) then the permission system will check for "Permission
+level":
+
+- Player with permission level 1 can do all basic command
+- Player with permission level 3 and above can bypass lock check for item editing
 
 ## Color and Format Support
 
@@ -37,6 +43,6 @@ The mod supports color and formatting using the EssentialsEX color format, with 
 ## Feedback and Support
 
 If you encounter any issues or have suggestions for improvement, please don't hesitate to reach out on the mod's GitHub
-repository.
+issues or join my [discord server](https://discord.com/invite/xZneCTcEvb)
 
 Thank you so much 🛠️✨
