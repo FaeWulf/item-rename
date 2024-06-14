@@ -21,7 +21,7 @@ public class unhideEnchant {
         dispatcher.register(
                 CommandManager.literal("unhideenchant")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.UNHIDEENCHANT))
+                        .requires(Permissions.require(permission.UNHIDEENCHANT, 1))
                         .executes(unhideEnchant::run)
         );
     }

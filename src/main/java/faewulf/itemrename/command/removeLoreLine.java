@@ -27,7 +27,7 @@ public class removeLoreLine {
         dispatcher.register(
                 CommandManager.literal("removeloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVELORELINE))
+                        .requires(Permissions.require(permission.REMOVELORELINE, 1))
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1))
                                 .executes(removeLoreLine::run)
                         )

@@ -27,7 +27,7 @@ public class lockItem {
         dispatcher.register(
                 CommandManager.literal("lockitem")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.LOCK))
+                        .requires(Permissions.require(permission.LOCK, 1))
                         .executes(lockItem::run)
         );
     }
