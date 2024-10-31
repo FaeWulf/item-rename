@@ -3,13 +3,15 @@
   "id": "item-rename",
   "version": "${version}",
   "name": "Item-rename",
-  "description": "Allows players to edit various properties of items in the game, such as their name, lore, and enchantment glow. With support for color and formatting",
+  "description": "Allows players to edit various properties of items in the game, such as their name, lore, and enchantment glow. With support for color and formatting\n1.19 ported by Murren",
   "authors": [
-    "Faewulf"
+    "Faewulf",
+    "Murren"
   ],
   "contact": {
     "homepage": "https://faewulf.xyz/",
-    "sources": "https://github.com/FaeWulf/item-rename"
+    "sources": "https://github.com/FaeWulf/item-rename",
+    "issues": "https://github.com/FaeWulf/item-rename/issues"
   },
   "license": "CC0-1.0",
   "icon": "assets/item-rename/icon.png",
@@ -31,11 +33,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.5",
-    "minecraft": "~1.19.4",
+    "minecraft": "~1.19.1",
     "java": ">=17",
     "fabric-api": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
