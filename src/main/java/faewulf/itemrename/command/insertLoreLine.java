@@ -51,7 +51,7 @@ public class insertLoreLine {
             throw new SimpleCommandExceptionType(
                     Text.of("You must hold an item to modify it.")).create();
         }
-      
+
         ownerCheck.check(player, holding);
 
         Text formatted;

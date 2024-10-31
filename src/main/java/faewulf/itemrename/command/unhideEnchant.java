@@ -7,8 +7,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,7 +40,17 @@ public class unhideEnchant {
 
         ownerCheck.check(player, holding);
 
-        holding.apply(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT, comp -> comp.withShowInTooltip(true));
+        if (!holding.hasNbt()) {
+            player.sendMessage(Text.of("Item has no NBT data"), false);
+            return 0;
+        }
+
+        int hideflags = holding.getNbt().getInt("HideFlags");
+        hideflags = hideflags & ~ItemStack.TooltipSection.ENCHANTMENTS.getFlag();
+        holding.getNbt().putInt("HideFlags", hideflags);
+
+        //holding.getHideFlags().remove(ItemStack.TooltipSection.ENCHANTMENTS);
+        //holding.apply(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT, comp -> comp.withShowInTooltip(true));
 
         return 0;
     }

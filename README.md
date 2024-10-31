@@ -8,6 +8,8 @@ cake.
 
 This mod is heavily inspired by the plugin: [EpicRename](https://www.spigotmc.org/resources/epicrename.4341/)
 
+This mod was originally made by FaeWulf, backported to 1.19 by Murren.
+
 Also you can use my tools to easily make your own custom name/lore: https://faewulf.xyz/projects/epicrename
 
 ## Commands and Permissions

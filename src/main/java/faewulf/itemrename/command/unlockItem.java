@@ -7,8 +7,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,12 +40,17 @@ public class unlockItem {
 
         ownerCheck.check(player, holding);
 
-        //remove tag
-        //set tag
-        holding.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
+        if (!holding.hasNbt()) {
+            player.sendMessage(Text.of("Item has no NBT data"), false);
+            return 0;
+        }
+
+        holding.getNbt().remove("itemrename:authorUUID");
+        holding.getNbt().remove("itemrename:authorName");
+        /*holding.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
             currentNbt.remove("itemrename:authorUUID");
             currentNbt.remove("itemrename:authorName");
-        }));
+        }));*/
 
         return 0;
     }

@@ -1,105 +1,73 @@
 package faewulf.itemrename.util;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class loreEditor {
     public static void setLore(ItemStack stack, int lineIndex, Text loreText) {
-        LoreComponent lore = stack.getComponents().get(DataComponentTypes.LORE);
+        NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
 
-        //if null
-        if (lore == null)
-            lore = new LoreComponent(new ArrayList<>());
-
-        //get all lores from the array
-        List<Text> allLoreLines = new ArrayList<Text>(lore.lines());
-
-        //should fill empty line with null?
-        int currentLoreSize = allLoreLines.size();
-        while (lineIndex > currentLoreSize) {
-            currentLoreSize++;
-            allLoreLines.add(Text.of(" "));
+        NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        if (lore.size() + 1 <= lineIndex) {
+            return;
         }
 
-        //replace target lore into this item
-        allLoreLines.set(lineIndex - 1, loreText);
-
-        //just replace the obj
-        lore = new LoreComponent(allLoreLines);
-        stack.set(DataComponentTypes.LORE, lore);
+        lore.set(lineIndex - 1, NbtString.of(Text.Serializer.toJson(loreText)));
+        itemNbt.put("Lore", lore);
     }
 
     public static void insertLore(ItemStack stack, int lineIndex, Text loreText) {
-        LoreComponent lore = stack.getComponents().get(DataComponentTypes.LORE);
+        NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
 
-        //if null
-        if (lore == null)
-            lore = new LoreComponent(new ArrayList<>());
-
-        //get all lores from the array
-        List<Text> allLoreLines = new ArrayList<Text>(lore.lines());
-
-        //if lineindex > lines
-        //should fill empty line with null?
-        int currentLoreSize = allLoreLines.size();
-        while (lineIndex - 1 > currentLoreSize) {
-            currentLoreSize++;
-            allLoreLines.add(Text.of(" "));
+        NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        if (lore.size() + 1 <= lineIndex) {
+            return;
         }
-
-        //replace target lore into this item
-        allLoreLines.add(lineIndex - 1, loreText);
-
-        //just replace the obj
-        lore = new LoreComponent(allLoreLines);
-        stack.set(DataComponentTypes.LORE, lore);
+        lore.addElement(lineIndex - 1, NbtString.of(Text.Serializer.toJson(loreText)));;
+        itemNbt.put("Lore", lore);
     }
 
     public static void addLore(ItemStack stack, Text loreText) {
-        LoreComponent lore = stack.getComponents().get(DataComponentTypes.LORE);
+        NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
 
-        //if null
-        if (lore == null)
-            lore = new LoreComponent(new ArrayList<>());
+        NbtList lore = new NbtList();
+        if (itemNbt.contains("Lore")) {
+            lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        }
 
-        //get all lores from the array
-        List<Text> allLoreLines = new ArrayList<Text>(lore.lines());
-
-        //replace target lore into this item
-        allLoreLines.add(loreText);
-
-        //just replace the obj
-        lore = new LoreComponent(allLoreLines);
-        stack.set(DataComponentTypes.LORE, lore);
+        lore.add(NbtString.of(Text.Serializer.toJson(loreText)));
+        itemNbt.put("Lore", lore);
     }
 
     public static void removeLore(ItemStack stack) {
-        //just replace the obj
-        LoreComponent lore = new LoreComponent(new ArrayList<Text>());
-        stack.set(DataComponentTypes.LORE, lore);
+        NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
+
+        NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        lore.clear();
+        itemNbt.put("Lore", lore);
     }
 
     public static void removeLoreLine(ItemStack stack, int index) {
-        LoreComponent lore = stack.getComponents().get(DataComponentTypes.LORE);
+        NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
 
-        //if null
-        if (lore == null)
-            lore = new LoreComponent(new ArrayList<>());
+        if (!itemNbt.contains("Lore")) {
+            return;
+        }
 
-        //get all lores from the array
-        List<Text> allLoreLines = new ArrayList<Text>(lore.lines());
+        NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        if (lore.size() + 1 <= index) {
+            return;
+        }
 
-        //replace target lore into this item
-        if (index <= allLoreLines.size())
-            allLoreLines.remove(index - 1);
-
-        //just replace the obj
-        lore = new LoreComponent(allLoreLines);
-        stack.set(DataComponentTypes.LORE, lore);
+        lore.remove(index - 1);
+        itemNbt.put("Lore", lore);
     }
 }
