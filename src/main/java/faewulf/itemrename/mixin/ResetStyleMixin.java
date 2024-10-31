@@ -1,5 +1,6 @@
 package faewulf.itemrename.mixin;
 
+import faewulf.itemrename.util.stringParser;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Style;
@@ -16,16 +17,36 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Style.class)
 public class ResetStyleMixin {
 
-    @Shadow @Final private @Nullable TextColor color;
-    @Shadow @Final private @Nullable Boolean bold;
-    @Shadow @Final private @Nullable Boolean italic;
-    @Shadow @Final private @Nullable Boolean strikethrough;
-    @Shadow @Final private @Nullable Boolean underlined;
-    @Shadow @Final private @Nullable Boolean obfuscated;
-    @Shadow @Final private @Nullable ClickEvent clickEvent;
-    @Shadow @Final private @Nullable HoverEvent hoverEvent;
-    @Shadow @Final private @Nullable String insertion;
-    @Shadow @Final private @Nullable Identifier font;
+    @Shadow
+    @Final
+    private @Nullable TextColor color;
+    @Shadow
+    @Final
+    private @Nullable Boolean bold;
+    @Shadow
+    @Final
+    private @Nullable Boolean italic;
+    @Shadow
+    @Final
+    private @Nullable Boolean strikethrough;
+    @Shadow
+    @Final
+    private @Nullable Boolean underlined;
+    @Shadow
+    @Final
+    private @Nullable Boolean obfuscated;
+    @Shadow
+    @Final
+    private @Nullable ClickEvent clickEvent;
+    @Shadow
+    @Final
+    private @Nullable HoverEvent hoverEvent;
+    @Shadow
+    @Final
+    private @Nullable String insertion;
+    @Shadow
+    @Final
+    private @Nullable Identifier font;
 
     @Invoker("<init>")
     static Style create(
@@ -49,7 +70,7 @@ public class ResetStyleMixin {
      * @reason Reset case makes no sense!
      */
     @Overwrite
-   public Style withFormatting(Formatting... formattings) {
+    public Style withFormatting(Formatting... formattings) {
         TextColor textColor = this.color;
         Boolean boolean_ = this.bold;
         Boolean boolean2 = this.italic;
@@ -57,8 +78,8 @@ public class ResetStyleMixin {
         Boolean boolean4 = this.underlined;
         Boolean boolean5 = this.obfuscated;
 
-        for(Formatting formatting : formattings) {
-            switch(formatting) {
+        for (Formatting formatting : formattings) {
+            switch (formatting) {
                 case OBFUSCATED:
                     boolean5 = true;
                     break;
@@ -85,6 +106,10 @@ public class ResetStyleMixin {
                 default:
                     textColor = TextColor.fromFormatting(formatting);
             }
+        }
+
+        if (stringParser.customColor > 0) {
+            textColor = TextColor.fromRgb(stringParser.customColor);
         }
 
         return create(textColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);

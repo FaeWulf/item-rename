@@ -6,25 +6,32 @@ import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class stringParser {
+
+    public static int customColor = 0;
+
     public static Text stringToText(String str) {
 
         MutableText parsedText = Text.empty();
 
-        Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR])");
+        //Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR])|&#(?:[0-9a-fA-F]{3}){1,2}");
+
+        Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR]|#(?:[0-9a-fA-F]{3}){1,2})");
+
         Matcher matcher = pattern.matcher(str);
 
         //lastEnd is an indicator for the jump cursor each time matcher found a valid pattern.
         //So we can we locate the substring after the last matched pattern.
         int lastEnd = 0;
         //for styles
-        List<Character> styles = new ArrayList<>();
+        List<String> styles = new ArrayList<>();
         //For the original style case
-        styles.add(' ');
+        styles.add(" ");
 
         //matching format code "&+"
         while (matcher.find()) {
@@ -33,12 +40,11 @@ public class stringParser {
             String stringAfterFormatCode = str.substring(lastEnd, matcher.start());
 
             //matches: &+formatcode so style will hold only the format code
-            char style = matcher.group(1).charAt(0);
+            String style = matcher.group(1);
 
-            //if string after formatcode is null then append this style for the next string
-            //Case: &2&ltest string -> test string has 2 style &2 and &l
+            //if string after formatcode is null, then append this style for the next string
+            //Case: &2&ltest string -> test string has 2 styles: &2 and &l
             if (stringAfterFormatCode.isEmpty()) {
-
                 styles.add(style);
 
                 //update cursor
@@ -53,15 +59,25 @@ public class stringParser {
             styles.forEach(character -> {
 
                 //cover the first styles input
-                if (character == ' ')
+                if (Objects.equals(character, " "))
                     return;
 
-                Formatting formatStyle = Formatting.byCode(character);
-                if (formatStyle == null) {
-                    return;
+                int colorCode = hex2Int(character);
+                if (colorCode == -1) {
+                    Formatting formatStyle = Formatting.byCode(character.charAt(0));
+
+                    if (formatStyle == null) {
+                        return;
+                    }
+
+                    //for custom hex color, this will reset to no custom color
+                    if (formatStyle.getColorValue() != null)
+                        customColor = -1;
+
+                    formattings.add(formatStyle);
+                } else {
+                    customColor = colorCode;
                 }
-
-                formattings.add(formatStyle);
             });
 
             //append Text to result
@@ -70,6 +86,7 @@ public class stringParser {
             //after format string then reset styles
             styles.clear();
             styles.add(style);
+            customColor = -1;
 
             //update cursor
             lastEnd = matcher.end();
@@ -82,20 +99,48 @@ public class stringParser {
         //convert char to formatting then append to a list
         styles.forEach(character -> {
             //cover the first styles input
-            if (character == ' ')
+            if (Objects.equals(character, " "))
                 return;
-            Formatting formatStyle = Formatting.byCode(character);
-            if (formatStyle == null) {
-                return;
+
+            int colorCode = hex2Int(character);
+            if (colorCode == -1) {
+                Formatting formatStyle = Formatting.byCode(character.charAt(0));
+
+                if (formatStyle == null) {
+                    return;
+                }
+
+                //for custom hex color, this will reset to no custom color
+                if (formatStyle.getColorValue() != null)
+                    customColor = -1;
+
+                formattings.add(formatStyle);
+            } else {
+                customColor = colorCode;
             }
-            formattings.add(formatStyle);
         });
 
         //safe check if not null
-        if (!stringAfterFormatCode.isEmpty())
+        if (!stringAfterFormatCode.isEmpty()) {
             //append Text to result
             parsedText.append(Text.literal(stringAfterFormatCode).styled(style_ -> style_.withFormatting(formattings.toArray(new Formatting[]{}))));
+            customColor = -1;
+        }
 
         return parsedText;
+    }
+
+    public static int hex2Int(String hex) {
+        Pattern patternHex = Pattern.compile("^#(?:[0-9a-fA-F]{3}){1,2}$");
+        Matcher matcher = patternHex.matcher(hex);
+        try {
+            if (matcher.find()) {
+                String hexValue = hex.substring(1);
+                return Integer.parseInt(hexValue, 16);
+            } else return -1;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+
     }
 }
