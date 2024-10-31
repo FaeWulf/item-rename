@@ -27,7 +27,7 @@ public class removeLore {
         dispatcher.register(
                 CommandManager.literal("removelore")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVELORE))
+                        .requires(Permissions.require(permission.REMOVELORE, 1))
                         .executes(removeLore::run)
         );
     }
@@ -44,7 +44,7 @@ public class removeLore {
             throw new SimpleCommandExceptionType(
                     Text.of("You must hold an item to modify it.")).create();
         }
-      
+
         ownerCheck.check(player, holding);
 
         holding.remove(DataComponentTypes.LORE);

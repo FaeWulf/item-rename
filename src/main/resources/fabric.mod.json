@@ -30,6 +30,13 @@
       "environment": "client"
     }
   ],
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/xZneCTcEvb"
+      }
+    }
+  },
   "depends": {
     "fabricloader": ">=0.15.5",
     "minecraft": "~1.21.2",

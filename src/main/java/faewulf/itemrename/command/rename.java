@@ -6,17 +6,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import faewulf.itemrename.util.ownerCheck;
+import faewulf.itemrename.util.permission;
 import faewulf.itemrename.util.stringParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import faewulf.itemrename.util.permission;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.text.Text;
 
 import java.util.Objects;
 
@@ -25,7 +25,7 @@ public class rename {
         dispatcher.register(
                 CommandManager.literal("rename")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.RENAME))
+                        .requires(Permissions.require(permission.RENAME, 1))
                         .then(CommandManager.argument("name", StringArgumentType.greedyString())
                                 .executes(rename::run)
                         )

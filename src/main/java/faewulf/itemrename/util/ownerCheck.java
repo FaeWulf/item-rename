@@ -15,7 +15,7 @@ public class ownerCheck {
     static public void check(ServerPlayerEntity player, ItemStack item) throws CommandSyntaxException {
 
         //if has admin permission then bypass the check
-        if (Permissions.check(player, permission.ADMIN))
+        if (Permissions.check(player, permission.ADMIN, 3))
             return;
 
         //get data
