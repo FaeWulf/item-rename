@@ -20,7 +20,7 @@ public class hideEnchant {
         dispatcher.register(
                 CommandManager.literal("hideenchant")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.HIDEENCHANT))
+                        .requires(Permissions.require(permission.HIDEENCHANT, 1))
                         .executes(hideEnchant::run)
         );
     }

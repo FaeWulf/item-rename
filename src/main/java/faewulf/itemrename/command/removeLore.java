@@ -21,7 +21,7 @@ public class removeLore {
         dispatcher.register(
                 CommandManager.literal("removelore")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVELORE))
+                        .requires(Permissions.require(permission.REMOVELORE, 1))
                         .executes(removeLore::run)
         );
     }
