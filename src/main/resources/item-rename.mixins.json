@@ -3,7 +3,8 @@
   "package": "faewulf.itemrename.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "ResetStyleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
