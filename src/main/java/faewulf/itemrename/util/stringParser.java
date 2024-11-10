@@ -20,22 +20,30 @@ public class stringParser {
         MutableText parsedText = Text.empty();
 
         //Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR])|&#(?:[0-9a-fA-F]{3}){1,2}");
-
         Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR]|#(?:[0-9a-fA-F]{3}){1,2})");
 
-        Matcher matcher = pattern.matcher(str);
+        //force a straight case
+        Pattern forceStraightChecker = Pattern.compile("(&o)");
+        boolean forceStraight = forceStraightChecker.matcher(str).find();
 
         //lastEnd is an indicator for the jump cursor each time matcher found a valid pattern.
-        //So we can we locate the substring after the last matched pattern.
+        //So we can locate the substring after the last matched pattern.
         int lastEnd = 0;
+
         //for styles
         List<String> styles = new ArrayList<>();
-        //For the original style case
-        styles.add(" ");
 
+        //For the original style case
+        if (forceStraight) //for force reset every time switch style
+            styles.add("r");
+        else
+            styles.add(" ");
+
+        str = str.replaceAll("&o", "");
+
+        Matcher matcher = pattern.matcher(str);
         //matching format code "&+"
         while (matcher.find()) {
-
             //string to format
             String stringAfterFormatCode = str.substring(lastEnd, matcher.start());
 
@@ -85,6 +93,11 @@ public class stringParser {
 
             //after format string then reset styles
             styles.clear();
+
+            //for force reset every time switch style
+            if (forceStraight)
+                styles.add("r");
+
             styles.add(style);
             customColor = -1;
 
