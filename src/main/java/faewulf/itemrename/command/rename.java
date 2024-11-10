@@ -15,10 +15,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-
-import java.util.Objects;
 
 public class rename {
     static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -59,10 +56,12 @@ public class rename {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
+        /*
         if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
             throw new SimpleCommandExceptionType(
                     Text.of("Invalid name.")).create();
         }
+         */
 
         holding.set(DataComponentTypes.CUSTOM_NAME, formatted);
 

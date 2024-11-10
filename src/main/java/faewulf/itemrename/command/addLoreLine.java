@@ -1,7 +1,6 @@
 package faewulf.itemrename.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -16,10 +15,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-
-import java.util.Objects;
 
 public class addLoreLine {
 
@@ -61,10 +57,10 @@ public class addLoreLine {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
-        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
-            throw new SimpleCommandExceptionType(
-                    Text.of("Invalid string.")).create();
-        }
+//        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
+//            throw new SimpleCommandExceptionType(
+//                    Text.of("Invalid string.")).create();
+//        }
 
         //holding.set(DataComponentTypes.LORE, formatted);
         loreEditor.addLore(holding, formatted);
