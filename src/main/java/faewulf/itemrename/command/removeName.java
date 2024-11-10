@@ -39,7 +39,8 @@ public class removeName {
 
         ownerCheck.check(player, holding);
 
-        holding.setCustomName(null);
+        //holding.setCustomName(null);
+        holding.removeCustomName();
 
         return 0;
     }

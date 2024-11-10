@@ -40,7 +40,14 @@ public class removeGlow {
 
         ownerCheck.check(player, holding);
 
-        holding.getNbt().putBoolean("ForceGlint", false);
+        if(holding.getNbt() != null && holding.getNbt().contains("ForceGlint")) {
+            holding.getNbt().remove("ForceGlint");
+
+            if (holding.getNbt().isEmpty()) {
+                holding.setNbt(null); // Clear the NBT data to make it stackable with unmodified items
+            }
+        }
+
         //holding.remove(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE);
 
         return 0;

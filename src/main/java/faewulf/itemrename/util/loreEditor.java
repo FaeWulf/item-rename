@@ -50,9 +50,15 @@ public class loreEditor {
     public static void removeLore(ItemStack stack) {
         NbtCompound itemNbt = stack.getOrCreateSubNbt("display");
 
-        NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
-        lore.clear();
-        itemNbt.put("Lore", lore);
+        //NbtList lore = itemNbt.getList("Lore", NbtElement.STRING_TYPE);
+        //lore.clear();
+
+        itemNbt.remove("Lore");
+
+        //also remove parent nbt
+        if (itemNbt.isEmpty()) {
+            itemNbt.remove("display");
+        }
     }
 
     public static void removeLoreLine(ItemStack stack, int index) {
