@@ -47,6 +47,11 @@ public class unlockItem {
 
         holding.getNbt().remove("itemrename:authorUUID");
         holding.getNbt().remove("itemrename:authorName");
+
+        if (holding.getNbt().isEmpty()) {
+            holding.setNbt(null); // Clear the NBT data to make it stackable with unmodified items
+        }
+
         /*holding.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
             currentNbt.remove("itemrename:authorUUID");
             currentNbt.remove("itemrename:authorName");
