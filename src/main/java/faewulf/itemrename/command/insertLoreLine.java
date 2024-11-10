@@ -16,10 +16,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-
-import java.util.Objects;
 
 public class insertLoreLine {
 
@@ -66,10 +63,10 @@ public class insertLoreLine {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
-        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
-            throw new SimpleCommandExceptionType(
-                    Text.of("Invalid string.")).create();
-        }
+//        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
+//            throw new SimpleCommandExceptionType(
+//                    Text.of("Invalid string.")).create();
+//        }
 
         //holding.set(DataComponentTypes.LORE, formatted);
         loreEditor.insertLore(holding, line, formatted);

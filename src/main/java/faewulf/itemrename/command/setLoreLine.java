@@ -1,8 +1,8 @@
 package faewulf.itemrename.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -16,10 +16,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-
-import java.util.Objects;
 
 public class setLoreLine {
 
@@ -30,6 +27,7 @@ public class setLoreLine {
                         .requires(Permissions.require(permission.SETLORELINE, 1))
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1, 256))
                                 .then(CommandManager.argument("lore", StringArgumentType.greedyString())
+                                        //optional force straight
                                         .executes(setLoreLine::run)
                                 )
                         )
@@ -65,10 +63,12 @@ public class setLoreLine {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
+        /*
         if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
             throw new SimpleCommandExceptionType(
                     Text.of("Invalid string.")).create();
         }
+        */
 
         //holding.set(DataComponentTypes.LORE, formatted);
         loreEditor.setLore(holding, line, formatted);
