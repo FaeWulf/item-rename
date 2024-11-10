@@ -60,11 +60,6 @@ public class addLoreLine {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
-        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
-            throw new SimpleCommandExceptionType(
-                    Text.of("Invalid string.")).create();
-        }
-
         //holding.set(DataComponentTypes.LORE, formatted);
         loreEditor.addLore(holding, formatted);
 

@@ -58,11 +58,6 @@ public class rename {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
-        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
-            throw new SimpleCommandExceptionType(
-                    Text.of("Invalid name.")).create();
-        }
-
         holding.setCustomName(formatted);
 
         return 0;
