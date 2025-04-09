@@ -26,8 +26,8 @@ public class ownerCheck {
             return;
 
         //get 2 nbt data
-        String itemUUID = customData.copyNbt().getString("itemrename:authorUUID");
-        String itemName = customData.copyNbt().getString("itemrename:authorName");
+        String itemUUID = customData.copyNbt().getString("itemrename:authorUUID").orElse(null);
+        String itemName = customData.copyNbt().getString("itemrename:authorName").orElse(null);
 
         //null proof
         if (itemName == null)
@@ -52,7 +52,7 @@ public class ownerCheck {
             return "unknown";
 
         //get 2 nbt data
-        String itemName = customData.copyNbt().getString("itemrename:authorName");
+        String itemName = customData.copyNbt().getString("itemrename:authorName").orElse(null);
 
         if (itemName == null)
             return "unknown";

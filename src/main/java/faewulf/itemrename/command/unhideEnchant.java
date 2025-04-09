@@ -9,6 +9,7 @@ import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -42,7 +43,7 @@ public class unhideEnchant {
 
         ownerCheck.check(player, holding);
 
-        holding.apply(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT, comp -> comp.withShowInTooltip(true));
+        holding.apply(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplayComponent.DEFAULT, tooltipDisplayComponent -> tooltipDisplayComponent.with(DataComponentTypes.ENCHANTMENTS, false));
 
         return 0;
     }

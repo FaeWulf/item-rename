@@ -19,38 +19,44 @@ public class ResetStyleMixin {
 
     @Shadow
     @Final
-    private @Nullable TextColor color;
+    @Nullable TextColor color;
     @Shadow
     @Final
-    private @Nullable Boolean bold;
+    @Nullable Boolean bold;
     @Shadow
     @Final
-    private @Nullable Boolean italic;
+    @Nullable Boolean italic;
     @Shadow
     @Final
-    private @Nullable Boolean strikethrough;
+    @Nullable Boolean strikethrough;
     @Shadow
     @Final
-    private @Nullable Boolean underlined;
+    @Nullable Boolean underlined;
     @Shadow
     @Final
-    private @Nullable Boolean obfuscated;
+    @Nullable Boolean obfuscated;
     @Shadow
     @Final
-    private @Nullable ClickEvent clickEvent;
+    @Nullable ClickEvent clickEvent;
     @Shadow
     @Final
-    private @Nullable HoverEvent hoverEvent;
+    @Nullable HoverEvent hoverEvent;
     @Shadow
     @Final
-    private @Nullable String insertion;
+    @Nullable String insertion;
     @Shadow
     @Final
-    private @Nullable Identifier font;
+    @Nullable Identifier font;
+
+    @Shadow
+    @Final
+    @Nullable
+    private Integer shadowColor;
 
     @Invoker("<init>")
     static Style create(
             @Nullable TextColor color,
+            @Nullable Integer shadowColor,
             @Nullable Boolean bold,
             @Nullable Boolean italic,
             @Nullable Boolean underlined,
@@ -112,7 +118,7 @@ public class ResetStyleMixin {
             textColor = TextColor.fromRgb(stringParser.customColor);
         }
 
-        return create(textColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);
+        return create(textColor, this.shadowColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);
     }
 
 }
