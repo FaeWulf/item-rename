@@ -18,6 +18,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class insertLoreLine {
 
     static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -51,13 +54,18 @@ public class insertLoreLine {
 
         ownerCheck.check(player, holding);
 
-        Text formatted;
+        List<Text> formatted = new ArrayList<>();
         try {
             //get input string
             String name = StringArgumentType.getString(context, "lore");
 
+            // Break down the string using \n
+            String[] list = name.split("\\\\n");
+
             //parse string to text format
-            formatted = stringParser.stringToText(name);
+            for (String s : list) {
+                formatted.add(stringParser.stringToText(s));
+            }
 
         } catch (IllegalArgumentException exception) {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
@@ -69,7 +77,9 @@ public class insertLoreLine {
 //        }
 
         //holding.set(DataComponentTypes.LORE, formatted);
-        loreEditor.insertLore(holding, line, formatted);
+        for (Text text : formatted.reversed()) {
+            loreEditor.insertLore(holding, line, text);
+        }
 
         return 0;
     }
