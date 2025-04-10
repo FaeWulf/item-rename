@@ -19,6 +19,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import java.util.Objects;
 
 public class insertLoreLine {
@@ -54,20 +57,32 @@ public class insertLoreLine {
 
         ownerCheck.check(player, holding);
 
-        Text formatted;
+        List<Text> formatted = new ArrayList<>();
         try {
             //get input string
             String name = StringArgumentType.getString(context, "lore");
 
+            // Break down the string using \n
+            String[] list = name.split("\\\\n");
+
             //parse string to text format
-            formatted = stringParser.stringToText(name);
+            for (String s : list) {
+                formatted.add(stringParser.stringToText(s));
+            }
 
         } catch (IllegalArgumentException exception) {
             throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
         }
 
+//        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
+//            throw new SimpleCommandExceptionType(
+//                    Text.of("Invalid string.")).create();
+//        }
+
         //holding.set(DataComponentTypes.LORE, formatted);
-        loreEditor.insertLore(holding, line, formatted);
+        for (Text text : formatted.reversed()) {
+            loreEditor.insertLore(holding, line, text);
+        }
 
         return 0;
     }
