@@ -1,5 +1,7 @@
 package faewulf.itemrename.mixin;
 
+import faewulf.itemrename.inter.CustomFormatting;
+import faewulf.itemrename.inter.ICustomStyle;
 import faewulf.itemrename.util.stringParser;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -10,12 +12,12 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(Style.class)
-public class ResetStyleMixin {
+public class ResetStyleMixin implements ICustomStyle {
 
     @Shadow
     @Final
@@ -60,8 +62,8 @@ public class ResetStyleMixin {
      * @author Faewulf
      * @reason Reset case makes no sense!
      */
-    @Overwrite
-    public Style withFormatting(Formatting... formattings) {
+    @Unique
+    public Style ItemRename$withCustomFormatting(CustomFormatting... formattings) {
         TextColor textColor = this.color;
         Boolean boolean_ = this.bold;
         Boolean boolean2 = this.italic;
@@ -69,38 +71,40 @@ public class ResetStyleMixin {
         Boolean boolean4 = this.underlined;
         Boolean boolean5 = this.obfuscated;
 
-        for (Formatting formatting : formattings) {
-            switch (formatting) {
-                case OBFUSCATED:
-                    boolean5 = true;
-                    break;
-                case BOLD:
-                    boolean_ = true;
-                    break;
-                case STRIKETHROUGH:
-                    boolean3 = true;
-                    break;
-                case UNDERLINE:
-                    boolean4 = true;
-                    break;
-                case ITALIC:
-                    boolean2 = true;
-                    break;
-                case RESET: {
-                    boolean_ = false;
-                    boolean2 = false;
-                    boolean3 = false;
-                    boolean4 = false;
-                    boolean5 = false;
-                    textColor = null;
-                }
-                default:
-                    textColor = TextColor.fromFormatting(formatting);
-            }
-        }
+        for (CustomFormatting formatting : formattings) {
 
-        if (stringParser.customColor > 0) {
-            textColor = TextColor.fromRgb(stringParser.customColor);
+            // For default Formatting
+            if (formatting.isFormatting()) {
+                switch (formatting.getFormatting()) {
+                    case OBFUSCATED:
+                        boolean5 = true;
+                        break;
+                    case BOLD:
+                        boolean_ = true;
+                        break;
+                    case STRIKETHROUGH:
+                        boolean3 = true;
+                        break;
+                    case UNDERLINE:
+                        boolean4 = true;
+                        break;
+                    case ITALIC:
+                        boolean2 = true;
+                        break;
+                    case RESET: {
+                        boolean_ = false;
+                        boolean2 = false;
+                        boolean3 = false;
+                        boolean4 = false;
+                        boolean5 = false;
+                        textColor = null;
+                    }
+                    default:
+                        textColor = TextColor.fromFormatting(formatting.getFormatting());
+                }
+            } else if (formatting.isCustomColor()) {
+                textColor = TextColor.fromRgb(formatting.getCustomColorCode());
+            }
         }
 
         return create(textColor, this.shadowColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);
