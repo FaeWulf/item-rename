@@ -19,51 +19,42 @@ public class ResetStyleMixin {
 
     @Shadow
     @Final
-    private @Nullable TextColor color;
+    @Nullable TextColor color;
     @Shadow
     @Final
-    private @Nullable Boolean bold;
+    @Nullable Integer shadowColor;
     @Shadow
     @Final
-    private @Nullable Boolean italic;
+    @Nullable Boolean bold;
     @Shadow
     @Final
-    private @Nullable Boolean strikethrough;
+    @Nullable Boolean italic;
     @Shadow
     @Final
-    private @Nullable Boolean underlined;
+    @Nullable Boolean strikethrough;
     @Shadow
     @Final
-    private @Nullable Boolean obfuscated;
+    @Nullable Boolean underlined;
     @Shadow
     @Final
-    private @Nullable ClickEvent clickEvent;
+    @Nullable Boolean obfuscated;
     @Shadow
     @Final
-    private @Nullable HoverEvent hoverEvent;
+    @Nullable ClickEvent clickEvent;
     @Shadow
     @Final
-    private @Nullable String insertion;
+    @Nullable HoverEvent hoverEvent;
     @Shadow
     @Final
-    private @Nullable Identifier font;
+    @Nullable String insertion;
+    @Shadow
+    @Final
+    @Nullable Identifier font;
 
     @Invoker("<init>")
-    static Style create(
-            @Nullable TextColor color,
-            @Nullable Boolean bold,
-            @Nullable Boolean italic,
-            @Nullable Boolean underlined,
-            @Nullable Boolean strikethrough,
-            @Nullable Boolean obfuscated,
-            @Nullable ClickEvent clickEvent,
-            @Nullable HoverEvent hoverEvent,
-            @Nullable String insertion,
-            @Nullable Identifier font
-    ) {
+    static Style create(@Nullable TextColor color, @Nullable Integer shadowColor, @Nullable Boolean bold, @Nullable Boolean italic, @Nullable Boolean underlined, @Nullable Boolean strikethrough, @Nullable Boolean obfuscated, @Nullable ClickEvent clickEvent, @Nullable HoverEvent hoverEvent, @Nullable String insertion, @Nullable Identifier font) {
         throw new AssertionError();
     }
-
 
     /**
      * @author Faewulf
@@ -112,7 +103,7 @@ public class ResetStyleMixin {
             textColor = TextColor.fromRgb(stringParser.customColor);
         }
 
-        return create(textColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);
+        return create(textColor, this.shadowColor, boolean_, boolean2, boolean4, boolean3, boolean5, this.clickEvent, this.hoverEvent, this.insertion, this.font);
     }
 
 }
