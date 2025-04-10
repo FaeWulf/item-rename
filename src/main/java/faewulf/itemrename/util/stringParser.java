@@ -1,5 +1,7 @@
 package faewulf.itemrename.util;
 
+import faewulf.itemrename.inter.CustomFormatting;
+import faewulf.itemrename.inter.ICustomStyle;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -12,8 +14,6 @@ import java.util.regex.Pattern;
 
 
 public class stringParser {
-
-    public static int customColor = 0;
 
     public static Text stringToText(String str) {
 
@@ -61,7 +61,7 @@ public class stringParser {
             }
 
             //format string
-            List<Formatting> formattings = new ArrayList<>();
+            List<CustomFormatting> formattings = new ArrayList<>();
 
             //convert char to formatting then append to a list
             styles.forEach(character -> {
@@ -71,6 +71,9 @@ public class stringParser {
                     return;
 
                 int colorCode = hex2Int(character);
+
+                // If color code == -1 then it is Default Formatting,
+                // != -1 is custom hex color format
                 if (colorCode == -1) {
                     Formatting formatStyle = Formatting.byCode(character.charAt(0));
 
@@ -78,18 +81,17 @@ public class stringParser {
                         return;
                     }
 
-                    //for custom hex color, this will reset to no custom color
-                    if (formatStyle.getColorValue() != null)
-                        customColor = -1;
-
-                    formattings.add(formatStyle);
+                    formattings.add(new CustomFormatting(formatStyle));
                 } else {
-                    customColor = colorCode;
+                    formattings.add(new CustomFormatting(colorCode));
                 }
             });
 
             //append Text to result
-            parsedText.append(Text.literal(stringAfterFormatCode).styled(style_ -> style_.withFormatting(formattings.toArray(new Formatting[]{}))));
+            parsedText.append(
+                    Text.literal(stringAfterFormatCode)
+                            .styled(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
+            );
 
             //after format string then reset styles
             styles.clear();
@@ -99,7 +101,6 @@ public class stringParser {
                 styles.add("r");
 
             styles.add(style);
-            customColor = -1;
 
             //update cursor
             lastEnd = matcher.end();
@@ -107,7 +108,7 @@ public class stringParser {
 
         //for remaining string
         String stringAfterFormatCode = str.substring(lastEnd);
-        List<Formatting> formattings = new ArrayList<>();
+        List<CustomFormatting> formattings = new ArrayList<>();
 
         //convert char to formatting then append to a list
         styles.forEach(character -> {
@@ -123,21 +124,20 @@ public class stringParser {
                     return;
                 }
 
-                //for custom hex color, this will reset to no custom color
-                if (formatStyle.getColorValue() != null)
-                    customColor = -1;
-
-                formattings.add(formatStyle);
+                formattings.add(new CustomFormatting(formatStyle));
             } else {
-                customColor = colorCode;
+                formattings.add(new CustomFormatting(colorCode));
             }
         });
 
         //safe check if not null
         if (!stringAfterFormatCode.isEmpty()) {
             //append Text to result
-            parsedText.append(Text.literal(stringAfterFormatCode).styled(style_ -> style_.withFormatting(formattings.toArray(new Formatting[]{}))));
-            customColor = -1;
+
+            parsedText.append(
+                    Text.literal(stringAfterFormatCode)
+                            .styled(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
+            );
         }
 
         return parsedText;
