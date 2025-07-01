@@ -1,11 +1,9 @@
 package faewulf.itemrename.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import faewulf.itemrename.util.loreEditor;
 import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -22,7 +20,17 @@ public class glow {
         dispatcher.register(
                 CommandManager.literal("glow")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.GLOW, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.GLOW, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(glow::run)
         );
     }
