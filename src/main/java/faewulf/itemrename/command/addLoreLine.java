@@ -21,7 +21,6 @@ import net.minecraft.util.Hand;
 import java.util.Objects;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class addLoreLine {
@@ -30,7 +29,17 @@ public class addLoreLine {
         dispatcher.register(
                 CommandManager.literal("addloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.ADDLORELINE, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.ADDLORELINE, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("lore", StringArgumentType.greedyString())
                                 .executes(addLoreLine::run)
                         )

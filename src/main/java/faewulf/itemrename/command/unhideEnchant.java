@@ -19,7 +19,17 @@ public class unhideEnchant {
         dispatcher.register(
                 CommandManager.literal("unhideenchant")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.UNHIDEENCHANT, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.UNHIDEENCHANT, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(unhideEnchant::run)
         );
     }

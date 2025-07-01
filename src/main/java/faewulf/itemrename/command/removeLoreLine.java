@@ -22,7 +22,17 @@ public class removeLoreLine {
         dispatcher.register(
                 CommandManager.literal("removeloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVELORELINE, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.REMOVELORELINE, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1))
                                 .executes(removeLoreLine::run)
                         )
