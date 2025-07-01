@@ -2,24 +2,19 @@ package faewulf.itemrename.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import faewulf.itemrename.util.loreEditor;
 import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
-import faewulf.itemrename.util.stringParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-
-import java.util.Objects;
 
 public class removeLoreLine {
 
@@ -27,7 +22,17 @@ public class removeLoreLine {
         dispatcher.register(
                 CommandManager.literal("removeloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVELORELINE, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.REMOVELORELINE, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1))
                                 .executes(removeLoreLine::run)
                         )

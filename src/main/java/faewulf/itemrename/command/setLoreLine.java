@@ -24,7 +24,17 @@ public class setLoreLine {
         dispatcher.register(
                 CommandManager.literal("setloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.SETLORELINE, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.SETLORELINE, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1, 256))
                                 .then(CommandManager.argument("lore", StringArgumentType.greedyString())
                                         //optional force straight

@@ -8,7 +8,6 @@ import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
@@ -23,7 +22,17 @@ public class hideEnchant {
         dispatcher.register(
                 CommandManager.literal("hideenchant")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.HIDEENCHANT, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.HIDEENCHANT, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(hideEnchant::run)
         );
     }
