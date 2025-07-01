@@ -30,7 +30,17 @@ public class insertLoreLine {
         dispatcher.register(
                 CommandManager.literal("insertloreline")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.INSERTLORELINE, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.INSERTLORELINE, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("line number", IntegerArgumentType.integer(1, 256))
                                 .then(CommandManager.argument("lore", StringArgumentType.greedyString())
                                         .executes(insertLoreLine::run)

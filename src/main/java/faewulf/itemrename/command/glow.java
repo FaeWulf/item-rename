@@ -19,7 +19,17 @@ public class glow {
         dispatcher.register(
                 CommandManager.literal("glow")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.GLOW, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.GLOW, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(glow::run)
         );
     }
