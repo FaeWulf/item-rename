@@ -21,7 +21,17 @@ public class unlockItem {
         dispatcher.register(
                 CommandManager.literal("unlockitem")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.UNLOCK, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.UNLOCK, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(unlockItem::run)
         );
     }

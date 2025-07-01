@@ -22,7 +22,17 @@ public class rename {
         dispatcher.register(
                 CommandManager.literal("rename")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.RENAME, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.RENAME, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .then(CommandManager.argument("name", StringArgumentType.greedyString())
                                 .executes(rename::run)
                         )

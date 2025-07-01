@@ -20,7 +20,17 @@ public class removeGlow {
         dispatcher.register(
                 CommandManager.literal("removeglow")
                         .requires(ServerCommandSource::isExecutedByPlayer)
-                        .requires(Permissions.require(permission.REMOVEGLOW, 1))
+                        .requires(
+                                source -> {
+                                    // multiplayer case
+                                    if (source.getServer().isDedicated()) {
+                                        return Permissions.check(source, permission.REMOVEGLOW, 1);
+                                    } else {
+                                        // fallback true for single player world
+                                        return true;
+                                    }
+                                }
+                        )
                         .executes(removeGlow::run)
         );
     }
