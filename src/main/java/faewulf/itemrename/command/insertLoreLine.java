@@ -67,7 +67,7 @@ public class insertLoreLine {
 
             //parse string to text format
             for (String s : list) {
-                formatted.add(stringParser.stringToText(s));
+                formatted.add(0 ,stringParser.stringToText(s));
             }
 
         } catch (IllegalArgumentException exception) {
@@ -80,7 +80,7 @@ public class insertLoreLine {
 //        }
 
         //holding.set(DataComponentTypes.LORE, formatted);
-        for (Text text : formatted.reversed()) {
+        for (Text text : formatted) {
             loreEditor.insertLore(holding, line, text);
         }
 
