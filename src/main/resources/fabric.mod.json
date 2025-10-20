@@ -35,6 +35,11 @@
       "links": {
         "modmenu.discord": "https://discord.gg/xZneCTcEvb"
       }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2583": [
+        "faewulf/itemrename/inter/ICustomStyle"
+      ]
     }
   },
   "depends": {

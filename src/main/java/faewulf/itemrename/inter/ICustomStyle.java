@@ -1,8 +1,9 @@
 package faewulf.itemrename.inter;
 
 import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
 
 public interface ICustomStyle {
-    public Style ItemRename$withCustomFormatting(CustomFormatting... formattings);
+    default Style ItemRename$withCustomFormatting(CustomFormatting... formattings) {
+        throw new UnsupportedOperationException("Uninjected interface method");
+    }
 }

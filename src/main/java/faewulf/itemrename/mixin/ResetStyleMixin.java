@@ -2,13 +2,7 @@ package faewulf.itemrename.mixin;
 
 import faewulf.itemrename.inter.CustomFormatting;
 import faewulf.itemrename.inter.ICustomStyle;
-import faewulf.itemrename.util.stringParser;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.*;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,12 +42,13 @@ public class ResetStyleMixin implements ICustomStyle {
     @Nullable String insertion;
     @Shadow
     @Final
-    @Nullable Identifier font;
+    @Nullable StyleSpriteSource font;
 
     @Shadow
     @Final
     @Nullable
     private Integer shadowColor;
+
 
     @Invoker("<init>")
     static Style create(
@@ -67,7 +62,7 @@ public class ResetStyleMixin implements ICustomStyle {
             @Nullable ClickEvent clickEvent,
             @Nullable HoverEvent hoverEvent,
             @Nullable String insertion,
-            @Nullable Identifier font
+            @Nullable StyleSpriteSource font
     ) {
         throw new AssertionError();
     }
@@ -77,6 +72,7 @@ public class ResetStyleMixin implements ICustomStyle {
      * @author Faewulf
      * @reason Reset case makes no sense!
      */
+    @Override
     @Unique
     public Style ItemRename$withCustomFormatting(CustomFormatting... formattings) {
         TextColor textColor = this.color;

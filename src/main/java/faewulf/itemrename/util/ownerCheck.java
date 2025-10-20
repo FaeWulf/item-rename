@@ -6,6 +6,7 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -20,9 +21,10 @@ public class ownerCheck {
 
         //get data
         NbtComponent customData = item.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+        NbtCompound customDataRef = customData.copyNbt();
 
         //if not found any related data, then item is safe to pass
-        if (!customData.contains("itemrename:authorUUID") || !customData.contains("itemrename:authorName"))
+        if (!customDataRef.contains("itemrename:authorUUID") || !customDataRef.contains("itemrename:authorName"))
             return;
 
         //get 2 nbt data
@@ -47,8 +49,9 @@ public class ownerCheck {
 
     static public String getOwnerName(ItemStack item) {
         NbtComponent customData = item.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+        NbtCompound customDataRef = customData.copyNbt();
 
-        if (!customData.contains("itemrename:authorName"))
+        if (!customDataRef.contains("itemrename:authorName"))
             return "unknown";
 
         //get 2 nbt data

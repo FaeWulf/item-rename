@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -40,7 +40,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     //permission
-    include(modImplementation('me.lucko:fabric-permissions-api:0.4.1'))
+    include(modImplementation('me.lucko:fabric-permissions-api:0.5.0'))
 
 }
 
