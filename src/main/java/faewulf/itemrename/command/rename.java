@@ -25,7 +25,7 @@ public class rename {
                         .requires(
                                 source -> {
                                     // multiplayer case
-                                    if (source.getServer().isDedicated()) {
+                                    if (source.getServer() != null && source.getServer().isDedicated()) {
                                         return Permissions.check(source, permission.RENAME, 1);
                                     } else {
                                         // fallback true for single player world
