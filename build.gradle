@@ -40,7 +40,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     //permission
-    include(modImplementation('me.lucko:fabric-permissions-api:0.5.0'))
+    include(modImplementation('me.lucko:fabric-permissions-api:0.6.1'))
 
 }
 
