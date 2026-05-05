@@ -9,23 +9,23 @@ import faewulf.itemrename.util.loreEditor;
 import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 
 public class removeLoreLine {
 
-    static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    static public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("removeloreline")
-                        .requires(ServerCommandSource::isExecutedByPlayer)
+                Commands.literal("removeloreline")
+                        .requires(CommandSourceStack::isPlayer)
                         .requires(
                                 source -> {
                                     // multiplayer case
-                                    if (source.getServer() != null && source.getServer().isDedicated()) {
+                                    if (source.getServer() != null && source.getServer().isDedicatedServer()) {
                                         return Permissions.check(source, permission.REMOVELORELINE, 1);
                                     } else {
                                         // fallback true for single player world
@@ -33,23 +33,23 @@ public class removeLoreLine {
                                     }
                                 }
                         )
-                        .then(CommandManager.argument("line number", IntegerArgumentType.integer(1))
+                        .then(Commands.argument("line number", IntegerArgumentType.integer(1))
                                 .executes(removeLoreLine::run)
                         )
         );
     }
 
-    static private int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    static private int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        ServerPlayer player = context.getSource().getPlayerOrException();
 
         //get holding item
-        ItemStack holding = player.getStackInHand(Hand.MAIN_HAND);
+        ItemStack holding = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         //if not holding anything
         if (holding.isEmpty()) {
             throw new SimpleCommandExceptionType(
-                    Text.of("You must hold an item to modify it.")).create();
+                    Component.nullToEmpty("You must hold an item to modify it.")).create();
         }
 
         ownerCheck.check(player, holding);

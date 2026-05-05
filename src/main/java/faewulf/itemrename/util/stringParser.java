@@ -2,22 +2,21 @@ package faewulf.itemrename.util;
 
 import faewulf.itemrename.inter.CustomFormatting;
 import faewulf.itemrename.inter.ICustomStyle;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 
 public class stringParser {
 
-    public static Text stringToText(String str) {
+    public static Component stringToText(String str) {
 
-        MutableText parsedText = Text.empty();
+        MutableComponent parsedText = Component.empty();
 
         //Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR])|&#(?:[0-9a-fA-F]{3}){1,2}");
         Pattern pattern = Pattern.compile("&([0123456789abcdefklmnorABCDEFKLMNOR]|#(?:[0-9a-fA-F]{3}){1,2})");
@@ -75,7 +74,7 @@ public class stringParser {
                 // If color code == -1 then it is Default Formatting,
                 // != -1 is custom hex color format
                 if (colorCode == -1) {
-                    Formatting formatStyle = Formatting.byCode(character.charAt(0));
+                    ChatFormatting formatStyle = ChatFormatting.getByCode(character.charAt(0));
 
                     if (formatStyle == null) {
                         return;
@@ -89,8 +88,8 @@ public class stringParser {
 
             //append Text to result
             parsedText.append(
-                    Text.literal(stringAfterFormatCode)
-                            .styled(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
+                    Component.literal(stringAfterFormatCode)
+                            .withStyle(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
             );
 
             //after format string then reset styles
@@ -118,7 +117,7 @@ public class stringParser {
 
             int colorCode = hex2Int(character);
             if (colorCode == -1) {
-                Formatting formatStyle = Formatting.byCode(character.charAt(0));
+                ChatFormatting formatStyle = ChatFormatting.getByCode(character.charAt(0));
 
                 if (formatStyle == null) {
                     return;
@@ -135,8 +134,8 @@ public class stringParser {
             //append Text to result
 
             parsedText.append(
-                    Text.literal(stringAfterFormatCode)
-                            .styled(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
+                    Component.literal(stringAfterFormatCode)
+                            .withStyle(style_ -> ((ICustomStyle) style_).ItemRename$withCustomFormatting(formattings.toArray(new CustomFormatting[]{})))
             );
         }
 

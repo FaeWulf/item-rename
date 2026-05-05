@@ -36,16 +36,14 @@
         "modmenu.discord": "https://discord.gg/xZneCTcEvb"
       }
     },
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2583": [
-        "faewulf/itemrename/inter/ICustomStyle"
-      ]
-    }
+    "accessWidener": [
+      "itemrename.classtweaker"
+    ]
   },
   "depends": {
-    "fabricloader": ">=0.15.5",
-    "minecraft": "~1.21.6",
-    "java": ">=21",
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~26.1.2",
+    "java": ">=25",
     "fabric-api": "*"
   }
 }

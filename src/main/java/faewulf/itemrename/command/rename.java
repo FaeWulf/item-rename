@@ -9,23 +9,23 @@ import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import faewulf.itemrename.util.stringParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 
 public class rename {
-    static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    static public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("rename")
-                        .requires(ServerCommandSource::isExecutedByPlayer)
+                Commands.literal("rename")
+                        .requires(CommandSourceStack::isPlayer)
                         .requires(
                                 source -> {
                                     // multiplayer case
-                                    if (source.getServer() != null && source.getServer().isDedicated()) {
+                                    if (source.getServer() != null && source.getServer().isDedicatedServer()) {
                                         return Permissions.check(source, permission.RENAME, 1);
                                     } else {
                                         // fallback true for single player world
@@ -33,28 +33,28 @@ public class rename {
                                     }
                                 }
                         )
-                        .then(CommandManager.argument("name", StringArgumentType.greedyString())
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
                                 .executes(rename::run)
                         )
         );
 
     }
 
-    static private int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+    static private int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
 
         //get holding item
-        ItemStack holding = player.getStackInHand(Hand.MAIN_HAND);
+        ItemStack holding = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         //if not holding anything
         if (holding.isEmpty()) {
             throw new SimpleCommandExceptionType(
-                    Text.of("You must hold an item to rename it.")).create();
+                    Component.nullToEmpty("You must hold an item to rename it.")).create();
         }
 
         ownerCheck.check(player, holding);
 
-        Text formatted;
+        Component formatted;
         try {
             //get input string
             String name = StringArgumentType.getString(context, "name");
@@ -63,7 +63,7 @@ public class rename {
             formatted = stringParser.stringToText(name);
 
         } catch (IllegalArgumentException exception) {
-            throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
+            throw new SimpleCommandExceptionType(Component.nullToEmpty(exception.getMessage())).create();
         }
 
         /*
@@ -73,7 +73,7 @@ public class rename {
         }
          */
 
-        holding.set(DataComponentTypes.CUSTOM_NAME, formatted);
+        holding.set(DataComponents.CUSTOM_NAME, formatted);
 
         return 0;
     }

@@ -2,7 +2,11 @@ package faewulf.itemrename.mixin;
 
 import faewulf.itemrename.inter.CustomFormatting;
 import faewulf.itemrename.inter.ICustomStyle;
-import net.minecraft.text.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.FontDescription;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,7 +46,7 @@ public class ResetStyleMixin implements ICustomStyle {
     @Nullable String insertion;
     @Shadow
     @Final
-    @Nullable StyleSpriteSource font;
+    @Nullable FontDescription font;
 
     @Shadow
     @Final
@@ -62,7 +66,7 @@ public class ResetStyleMixin implements ICustomStyle {
             @Nullable ClickEvent clickEvent,
             @Nullable HoverEvent hoverEvent,
             @Nullable String insertion,
-            @Nullable StyleSpriteSource font
+            @Nullable FontDescription font
     ) {
         throw new AssertionError();
     }
@@ -111,7 +115,7 @@ public class ResetStyleMixin implements ICustomStyle {
                         textColor = null;
                     }
                     default:
-                        textColor = TextColor.fromFormatting(formatting.getFormatting());
+                        textColor = TextColor.fromLegacyFormat(formatting.getFormatting());
                 }
             } else if (formatting.isCustomColor()) {
                 textColor = TextColor.fromRgb(formatting.getCustomColorCode());

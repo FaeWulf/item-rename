@@ -11,23 +11,23 @@ import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import faewulf.itemrename.util.stringParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 
 public class setLoreLine {
 
-    static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    static public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("setloreline")
-                        .requires(ServerCommandSource::isExecutedByPlayer)
+                Commands.literal("setloreline")
+                        .requires(CommandSourceStack::isPlayer)
                         .requires(
                                 source -> {
                                     // multiplayer case
-                                    if (source.getServer() != null && source.getServer().isDedicated()) {
+                                    if (source.getServer() != null && source.getServer().isDedicatedServer()) {
                                         return Permissions.check(source, permission.SETLORELINE, 1);
                                     } else {
                                         // fallback true for single player world
@@ -35,8 +35,8 @@ public class setLoreLine {
                                     }
                                 }
                         )
-                        .then(CommandManager.argument("line number", IntegerArgumentType.integer(1, 256))
-                                .then(CommandManager.argument("lore", StringArgumentType.greedyString())
+                        .then(Commands.argument("line number", IntegerArgumentType.integer(1, 256))
+                                .then(Commands.argument("lore", StringArgumentType.greedyString())
                                         //optional force straight
                                         .executes(setLoreLine::run)
                                 )
@@ -44,24 +44,24 @@ public class setLoreLine {
         );
     }
 
-    static private int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    static private int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
         int line = IntegerArgumentType.getInteger(context, "line number");
 
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        ServerPlayer player = context.getSource().getPlayerOrException();
 
         //get holding item
-        ItemStack holding = player.getStackInHand(Hand.MAIN_HAND);
+        ItemStack holding = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         //if not holding anything
         if (holding.isEmpty()) {
             throw new SimpleCommandExceptionType(
-                    Text.of("You must hold an item to modify it.")).create();
+                    Component.nullToEmpty("You must hold an item to modify it.")).create();
         }
 
         ownerCheck.check(player, holding);
 
-        Text formatted;
+        Component formatted;
         try {
             //get input string
             String name = StringArgumentType.getString(context, "lore");
@@ -70,7 +70,7 @@ public class setLoreLine {
             formatted = stringParser.stringToText(name);
 
         } catch (IllegalArgumentException exception) {
-            throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
+            throw new SimpleCommandExceptionType(Component.nullToEmpty(exception.getMessage())).create();
         }
 
         /*

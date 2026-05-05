@@ -1,6 +1,6 @@
 package faewulf.itemrename.inter;
 
-import net.minecraft.text.Style;
+import net.minecraft.network.chat.Style;
 
 public interface ICustomStyle {
     default Style ItemRename$withCustomFormatting(CustomFormatting... formattings) {

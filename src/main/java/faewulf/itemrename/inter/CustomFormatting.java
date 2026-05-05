@@ -1,16 +1,16 @@
 package faewulf.itemrename.inter;
 
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
 
 public class CustomFormatting {
     private int customColorCode = -1;
-    private Formatting formatting = null;
+    private ChatFormatting formatting = null;
 
     public CustomFormatting(int customColorCode) {
         this.customColorCode = customColorCode;
     }
 
-    public CustomFormatting(Formatting formatting) {
+    public CustomFormatting(ChatFormatting formatting) {
         this.formatting = formatting;
     }
 
@@ -23,7 +23,7 @@ public class CustomFormatting {
     }
 
 
-    public Formatting getFormatting() {
+    public ChatFormatting getFormatting() {
         return formatting;
     }
 

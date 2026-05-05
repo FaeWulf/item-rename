@@ -10,26 +10,25 @@ import faewulf.itemrename.util.ownerCheck;
 import faewulf.itemrename.util.permission;
 import faewulf.itemrename.util.stringParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
 public class addLoreLine {
 
-    static public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    static public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-                CommandManager.literal("addloreline")
-                        .requires(ServerCommandSource::isExecutedByPlayer)
+                Commands.literal("addloreline")
+                        .requires(CommandSourceStack::isPlayer)
                         .requires(
                                 source -> {
                                     // multiplayer case
-                                    if (source.getServer() != null && source.getServer().isDedicated()) {
+                                    if (source.getServer() != null && source.getServer().isDedicatedServer()) {
                                         return Permissions.check(source, permission.ADDLORELINE, 1);
                                     } else {
                                         // fallback true for single player world
@@ -37,28 +36,28 @@ public class addLoreLine {
                                     }
                                 }
                         )
-                        .then(CommandManager.argument("lore", StringArgumentType.greedyString())
+                        .then(Commands.argument("lore", StringArgumentType.greedyString())
                                 .executes(addLoreLine::run)
                         )
         );
     }
 
-    static private int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    static private int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        ServerPlayer player = context.getSource().getPlayerOrException();
 
         //get holding item
-        ItemStack holding = player.getStackInHand(Hand.MAIN_HAND);
+        ItemStack holding = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         //if not holding anything
         if (holding.isEmpty()) {
             throw new SimpleCommandExceptionType(
-                    Text.of("You must hold an item to modify it.")).create();
+                    Component.nullToEmpty("You must hold an item to modify it.")).create();
         }
 
         ownerCheck.check(player, holding);
 
-        List<Text> formatted = new ArrayList<>();
+        List<Component> formatted = new ArrayList<>();
         try {
             //get input string
             String name = StringArgumentType.getString(context, "lore");
@@ -73,7 +72,7 @@ public class addLoreLine {
 
 
         } catch (IllegalArgumentException exception) {
-            throw new SimpleCommandExceptionType(Text.of(exception.getMessage())).create();
+            throw new SimpleCommandExceptionType(Component.nullToEmpty(exception.getMessage())).create();
         }
 
 //        if (Objects.requireNonNull(Formatting.strip(formatted.getString())).isEmpty()) {
@@ -83,7 +82,7 @@ public class addLoreLine {
 
         //holding.set(DataComponentTypes.LORE, formatted);
 
-        for (Text text : formatted) {
+        for (Component text : formatted) {
             loreEditor.addLore(holding, text);
         }
 
